@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>Ajax学习</h1>
+
+        <h3>示例一 操作doom</h3>
+        <input type="button" class="btn badge-primary" value="点击" onclick="clickMe();"/>
+
+        <h3>示例二 jquery方式</h3>
+        <input type="button" class="btn badge-primary" value="点击" id="btn2"/>
+
+        <h3>示例三 jquery方式 传点数据</h3>
+        <input type="text" id="textUser" placeholder="name"/>
+        <input type="text" id="textAge" placeholder="age"/>
+        <input type="button" class="btn badge-primary" value="点击" id="btn3"/>
+
+        <h3>示例四 jquery方式 用表单传点数据</h3>
+        <form id="form1">
+            <input type="text" name="textUser" placeholder="name"/>
+            <input type="text" name="textAge" placeholder="age"/>
+            <input type="button" class="btn badge-primary" value="点击" id="btn4"/>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function clickMe() {
+            $.ajax({
+                url: '/task/ajax/',
+                type: 'post',
+                data: {
+                    'name': 'test',
+                    'description': 'test',
+                    'status': 'running'
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        $(function () {
+            //页面加载完自动运行
+            btn2Event()
+            btn3Event()
+            btn4Event()
+
+        })
+
+        function btn2Event() {
+            $("#btn2").click(function () {
+                $.ajax({
+                    url: '/task/ajax/',
+                    type: 'post',
+                    dataType: 'json',//反序列化
+                    data: {
+                        'name': 'test2',
+                        'description': 'test_jquery',
+                        'status': 'running'
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        console.log(data.status);
+                    }
+                })
+            })
+        }
+
+        function btn3Event() {
+            $("#btn3").click(function () {
+                $.ajax({
+                    url: '/task/ajax/',
+                    type: 'post',
+                    dataType: 'json',//反序列化
+                    data: {
+                        'name': $("#textUser").val(),
+                        'age': $("#textAge").val(),
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        console.log(data.name);
+                    }
+                })
+            })
+        }
+
+        function btn4Event() {
+            $("#btn4").click(function () {
+                $.ajax({
+                    url: '/task/ajax/',
+                    type: 'post',
+                    dataType: 'json',//反序列化
+                    data: $("#form1").serialize(),
+                    success: function (data) {
+                        console.log(data);
+                        console.log(data.name);
+                    }
+                })
+            })
+        }
+    </script>
+{% endblock %}

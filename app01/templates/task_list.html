@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <h1>任务管理</h1>
+
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function clickMe() {
+            $.ajax({
+                url: '/task/ajax/',
+                type: 'post',
+                data: {
+                    'name': 'test',
+                    'description': 'test',
+                    'status': 'running'
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+
+        $(function () {
+            //页面加载完自动运行
+            btn2Event()
+            btn3Event()
+            btn4Event()
+
+        })
+
+        function btn2Event() {
+            $("#btn2").click(function () {
+                $.ajax({
+                    url: '/task/ajax/',
+                    type: 'post',
+                    dataType: 'json',//反序列化
+                    data: {
+                        'name': 'test2',
+                        'description': 'test_jquery',
+                        'status': 'running'
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        console.log(data.status);
+                    }
+                })
+            })
+        }
+
+        function btn3Event() {
+            $("#btn3").click(function () {
+                $.ajax({
+                    url: '/task/ajax/',
+                    type: 'post',
+                    dataType: 'json',//反序列化
+                    data: {
+                        'name': $("#textUser").val(),
+                        'age': $("#textAge").val(),
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        console.log(data.name);
+                    }
+                })
+            })
+        }
+
+        function btn4Event() {
+            $("#btn4").click(function () {
+                $.ajax({
+                    url: '/task/ajax/',
+                    type: 'post',
+                    dataType: 'json',//反序列化
+                    data: $("#form1").serialize(),
+                    success: function (data) {
+                        console.log(data);
+                        console.log(data.name);
+                    }
+                })
+            })
+        }
+    </script>
+{% endblock %}

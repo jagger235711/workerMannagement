@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block css %}
+    <link rel="stylesheet"
+          href="https://cdn.bootcdn.net/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+{% endblock %}
+{% block js %}
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+
+    {#    <script>#}
+    {#        $(function () {#}
+    {#            $('#id_creat_time').datepicker({#}
+    {#                language: "zh-CN",#}
+    {#                format: "yyyy-mm-dd",#}
+    {#                startDate: "2015-01-01",#}
+    {#                todayBtn: true,#}
+    {#                todayHighlight: true,#}
+    {#                autoclose: true,#}
+    {#            });#}
+    {#        });#}
+    {##}
+    {#    </script>#}
+{#    <script>#}
+{#        function changeInputType() {#}
+{#            // 选择要更改的input元素#}
+{#            const inputElement = document.getElementById('id_creat_time');#}
+{##}
+{#            // 更改type属性#}
+{#            inputElement.setAttribute('type', 'date');#}
+{#        }#}
+{##}
+{#        window.onload = function () {#}
+{#            changeInputType();#}
+{#        }#}
+{#    </script>#}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">新建用户</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="form-group">
+                            <label for="{{ field.name }}">{{ field.label }}</label>
+                            {{ field }}
+                            <span class="help-block" style="color: red">{{ field.errors }}</span>
+                        </div>
+                    {% endfor %}
+
+
+                    <button type="submit" class="btn btn-success">提交</button>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
+

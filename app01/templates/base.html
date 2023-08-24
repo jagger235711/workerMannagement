@@ -1,0 +1,69 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>联通用户管理系统</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-4.6.2/css/bootstrap.min.css' %}">
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">联通用户管理系统</a>
+    {#        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"#}
+    {#                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">#}
+    {#            <span class="navbar-toggler-icon"></span>#}
+    {#        </button>#}
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/list/">管理员账户</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/depart/list/">部门管理</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/user/list/">用户管理</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/prettynum/list">靓号管理</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/task/list">任务管理</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav mr-auto" style="  margin-left: auto;; ">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                    {{ request.session.user_info.user_name }}
+                </a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" href="#">个人资料</a>
+                    <a class="dropdown-item" href="#">我的信息</a>
+                    <a class="dropdown-item" href="{% url "account_logout" %}">注销</a>
+                </div>
+            </li>
+
+        </ul>
+        {#        <form class="form-inline my-2 my-lg-0">#}
+        {#            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">#}
+        {#            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
+        {#        </form>#}
+    </div>
+</nav>
+
+
+{% block content %}
+{% endblock %}
+
+
+<script src="{% static 'js/jquery-3.7.0.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-4.6.2/js/bootstrap.min.js' %}"></script>
+{% block js %}
+{% endblock %}
+</body>
+</html>

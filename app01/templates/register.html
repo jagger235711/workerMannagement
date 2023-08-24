@@ -1,0 +1,39 @@
+{% extends 'userWeb/movies/base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    {#    <div class="container d-flex align-items-end justify-content-center" style="min-height: 100vh;">#}
+    <div class="container ">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="text-center">注册</h1>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{% url 'userWeb:register' %}" novalidate>
+                            {% csrf_token %}
+                            {% if error_form %}
+                                {{ error_form.errors }}
+                                {{ error_form|crispy }}
+                            {% else %}
+                                {{ register_form|crispy }}
+                            {% endif %}
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary">注册</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <p class="text-center">已有账户？<a href="{% url 'userWeb:login' %}">点击登录</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

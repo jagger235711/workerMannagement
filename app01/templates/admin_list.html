@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="container" >
+        {#        顶部按钮#}
+        <div style="display: flex;">
+            <div style="margin-bottom: 10px;margin-right: auto;">
+                <a class="btn btn-success" href="/admin/add">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                    新建管理员
+                </a>
+            </div>
+            <form method="get" style="display: flex;margin-left: auto;margin-bottom: 10px">
+                <div class="input-group" style="display: inline-flex">
+                    <label>
+                        <input type="text" class="form-control" placeholder="Search for..." name="q"
+                               value="{{ search_data }}">
+                    </label>
+                    <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">搜索</button>
+                        </span>
+                </div><!-- /input-group -->
+            </form>
+        </div>
+        {#数据表格#}
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                管理员列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>密码</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for object in queryset %}
+                    <tr>
+                        <th scope="row">{{ object.id }}</th>
+                        <td>{{ object.username }}</td>
+                        <td>{{ object.password }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs"
+                               href="/admin/edit/{{ object.id }}">编辑</a>
+                            <a class=" btn btn-danger btn-xs" href="/admin/delete/{{ object.id }}">删除</a>
+                            <a class="btn btn-primary btn-xs"
+                               href="/admin/reset/{{ object.id }}">重置密码</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        {{ page_string }}
+    </div>
+    <!--{#            底部分页#}
+        <div style="display: flex; justify-content: center;">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li>
+                        <a href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    前端页码
+                    <li><a href="?page=1">1</a></li>
+                    <li><a href="?page=2">2</a></li>
+                    <li><a href="?page=3">3</a></li>
+                    <li><a href="?page=4">4</a></li>
+                    <li><a href="?page=5">5</a></li>
+
+                    <li>
+                        <a href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>-->
+{% endblock %}
