@@ -170,3 +170,11 @@ class LoginForm(BaseForm):
     def clean_password(self):
         return md5(self.cleaned_data["password"])
 
+
+class TaskModelForm(BaseModelForm):
+    class Meta:
+        model = models.Task
+        fields = "__all__"
+        widgets = {
+            "detail": forms.TextInput
+        }

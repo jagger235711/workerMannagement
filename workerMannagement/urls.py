@@ -58,4 +58,8 @@ urlpatterns = [
     path('task/edit/<int:tid>/', views.task_edit),
 
     path('task/ajax/', views.task_ajax),
+
+    # 订单管理
+    path('order/list/', views.order_list),
+
 ]

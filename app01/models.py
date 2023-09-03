@@ -60,3 +60,34 @@ class Admin(models.Model):
 
     def __str__(self):
         return self.username
+
+
+class Task(models.Model):
+    """任务表"""
+
+    level_choices = (
+        (1, "紧急"),
+        (2, "重要"),
+        (3, "临时"),
+    )
+    title = models.CharField(verbose_name="任务名称", max_length=64)
+    detail = models.TextField(verbose_name="任务描述")
+    user = models.ForeignKey(verbose_name="负责人", to="Admin", to_field="id", on_delete=models.CASCADE)
+    level = models.SmallIntegerField(verbose_name="任务等级", choices=level_choices, default=1)
+
+    # create_time = models.DateTimeField(verbose_name="创建时间")
+
+    def __str__(self):
+        return self.title
+class Order(models.Model):
+    """订单表"""
+    oid = models.CharField(verbose_name="订单号", max_length=64)
+    title = models.CharField(verbose_name="订单名称", max_length=32)
+    price = models.IntegerField(verbose_name="订单价格")
+
+    status_choices = (
+        (1, "未支付"),
+        (2, "已支付"),
+    )
+    status = models.SmallIntegerField(verbose_name="订单状态", choices=status_choices, default=1)
+    user = models.ForeignKey(verbose_name="下单用户", to="Admin", to_field="id", on_delete=models.CASCADE)

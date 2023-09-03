@@ -1,19 +1,43 @@
 ## 写项目流程
 
-1. 创建项目，注册app，连接数据库
-2. 编写models，定义数据库表
-3. 修改数据库配置，生成数据库
+1. 创建项目，创建、注册app，配置静态文件、模板路径，
+2. 配置数据库操作：[配置第三方模块连接数据库]，创建、连接数据库，编写models，定义数据库表，修改数据库配置，生成数据库表
 
    `mannage.py makemigrations`
 
    `mannage.py migrate`
-4. 静态文件管理，模板文件管理
-5. 业务模块编写
+3. 业务模块编写
     1. 页面设计
     2. 配置url
     3. 编写对应视图函数，先不写具体功能，先把页面写出来。目标是要能看到页面，看到页面之后，再进行功能开发。
     4. 去对应视图中实现具体功能
     5. 优化，使用螺旋模型进行开发
+4. 
+- 在 urls.py ，路由 （ URL 和 函数的对应关系）。
+
+- 在views.py，视图函数，编写业务逻辑。
+
+- templates目录，编写HTML模板（含有模板语法、继承、`{% static 'xx'%}`）
+
+- ModelForm & Form组件，在我们开发增删改查功能。
+  - 生成HTML标签（生成默认值）
+  - 请求数据进行校验。
+  - 保存到数据库（ModelForm）
+  - 获取错误信息。
+
+- Cookie和Session，用户登录信息保存起来。
+
+- 中间件，基于中间件实现用户认证 ，基于：`process_request`。
+
+- ORM操作
+
+  ```
+  models.User.objects.filter(id="xxx")
+  models.User.objects.filter(id="xxx").order_by("-id")
+  ```
+
+- 分页组件。
+
 
 ## 捷径
 
@@ -88,6 +112,10 @@
     4. 逐步提升抽象等级，考虑更一般的情况，加强健壮性
     5. 调用类
 14. request.GET.urlencode()方法可以将request对象中的GET参数转换为urlencoded格式的字符串。
+15. model.ForeignKey() 设置外键 参数：to 对应的表 to_filed对应的字段
+16. 通过AJAX的方式传递数据对比直接用ModelForm形式传递
+    1.ajax是部分刷新。就实现来说，主要工程量在编写js代码，是通过js来控制提交表单的一种形式
+    2.对于后端来说，所有的流程基本不表
 
 ## 易错点
 
@@ -95,6 +123,6 @@
 2. 模板语法中格式化条件
    `{{obj.creat_time|date:"Y-m-d"}}`
 3. 自定义中间件需要在settings.middleware中注册
-   1. process_request
-      1. process_request返回HttpResponse、render、redirect对象时，请求会停止传递,返回None时，请求会继续向下传递
-      2. 
+    1. process_request
+        1. process_request返回HttpResponse、render、redirect对象时，请求会停止传递,返回None时，请求会继续向下传递
+        2. 

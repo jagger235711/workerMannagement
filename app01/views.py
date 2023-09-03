@@ -1,12 +1,12 @@
+import json
 from io import BytesIO
 
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 
+from app01 import forms
 from app01 import models
-from app01.forms import UserModelForm, AddPrettyNumModelForm, PrettyNumModelForm, AdminModelForm, AdminAddModelForm, \
-    AdminResetModelForm, LoginForm
 from app01.models import Admin
 from app01.utils.pagination import Pagination
 from app01.utils.verification_code import generate_captcha
@@ -99,10 +99,10 @@ def user_add_by_modelForm(request):
     :return:
     """
     if request.method == "GET":
-        form = UserModelForm()
+        form = forms.UserModelForm()
         return render(request, "user_add_by_modelForm.html", {"form": form})
     else:
-        form = UserModelForm(data=request.POST)
+        form = forms.UserModelForm(data=request.POST)
         if form.is_valid():
             form.save()
             return redirect("/user/list/")
@@ -119,10 +119,10 @@ def user_edit(request, uid):
     """
     row_object = models.UserInfo.objects.filter(id=uid).first()
     if request.method == "GET":
-        form = UserModelForm(instance=row_object)  # instance是一个实例对象，通常是从数据库中获取的。而data是一个字典，其中包含要提交的数据。
+        form = forms.UserModelForm(instance=row_object)  # instance是一个实例对象，通常是从数据库中获取的。而data是一个字典，其中包含要提交的数据。
         return render(request, "user_edit.html", {"form": form})
     else:
-        form = UserModelForm(data=request.POST, instance=row_object)
+        form = forms.UserModelForm(data=request.POST, instance=row_object)
         if form.is_valid():
             form.save()
             return redirect("/user/list/")
@@ -246,10 +246,10 @@ def prettynum_add(request):
     :return:
     """
     if request.method == "GET":
-        form = PrettyNumModelForm()
+        form = forms.PrettyNumModelForm()
         return render(request, "prettynum_add.html", {"form": form})
     else:
-        form = PrettyNumModelForm(data=request.POST)
+        form = forms.PrettyNumModelForm(data=request.POST)
         if form.is_valid():
             form.save()
             return redirect("/prettynum/list/")
@@ -266,10 +266,10 @@ def prettynum_edit(request, nid):
     """
     if request.method == "GET":
         prettynum = models.PrettyNum.objects.filter(id=nid).first()
-        form = AddPrettyNumModelForm(instance=prettynum)
+        form = forms.AddPrettyNumModelForm(instance=prettynum)
         return render(request, "prettynum_edit.html", {"form": form})
     else:
-        form = AddPrettyNumModelForm(data=request.POST)
+        form = forms.AddPrettyNumModelForm(data=request.POST)
         if form.is_valid():
             form.save()
             return redirect("/prettynum/list/")
@@ -324,10 +324,10 @@ def admin_add(request):
        :return:
        """
     if request.method == "GET":
-        form = AdminModelForm()
+        form = forms.AdminModelForm()
         return render(request, "base_add.html", {"form": form, "title": "添加管理员"})
     else:
-        form = AdminModelForm(data=request.POST)
+        form = forms.AdminModelForm(data=request.POST)
         if form.is_valid():
             form.save()
             return redirect("/admin/list/")
@@ -358,10 +358,10 @@ def admin_edit(request, uid):
     except:
         return redirect("/admin/list/")
     if request.method == "GET":
-        form = AdminAddModelForm(instance=row_object)
+        form = forms.AdminAddModelForm(instance=row_object)
         return render(request, "base_add.html", {"form": form, "title": "编辑管理员"})
     else:
-        form = AdminAddModelForm(data=request.POST, instance=row_object)
+        form = forms.AdminAddModelForm(data=request.POST, instance=row_object)
         if form.is_valid():
             form.save()
             return redirect("/admin/list/")
@@ -383,14 +383,14 @@ def admin_reset(request, uid):
     title = "重置密码 - {}".format(row_object.username)
 
     if request.method == "GET":
-        form = AdminResetModelForm()
+        form = forms.AdminResetModelForm()
         context = {
             "title": title,
             "form": form,
         }
         return render(request, "base_add.html", context=context)
     else:  # post
-        form = AdminResetModelForm(data=request.POST, instance=row_object)  # 修改密码时原来的对象也要带上，否则就是新建一个对象了
+        form = forms.AdminResetModelForm(data=request.POST, instance=row_object)  # 修改密码时原来的对象也要带上，否则就是新建一个对象了
         if form.is_valid():
             form.save()
             return redirect("/admin/list/")
@@ -409,13 +409,13 @@ def account_login(request):
     :return:
     """
     if request.method == "GET":
-        form = LoginForm()
+        form = forms.LoginForm()
         context = {
             "form": form,
         }
         return render(request, "login.html", context=context)
     else:  # post
-        form = LoginForm(data=request.POST)
+        form = forms.LoginForm(data=request.POST)
         if form.is_valid():  # is_valid是验证表单有无错误。不能校验用户是否存在
             vcode = form.cleaned_data.pop("vcode")
             vcode_session = request.session.get("captcha_text", "")
@@ -453,7 +453,7 @@ def account_logout(request):
 
 def account_regist(request):
     if request.method == "POST":
-        form = RegistrationForm(request.POST)
+        form = forms.RegistrationForm(request.POST)
         if form.is_valid():
             try:
                 with transaction.atomic():  # 保证数据库操作的原子性
@@ -506,11 +506,30 @@ def task_list(request):
     :param request:
     :return:
     """
-    return render(request, "task_list.html")
+    form = forms.TaskModelForm()
+    query_set = models.Task.objects.all().order_by("-id")
+
+    page_object = Pagination(request, queryset=query_set, page_size=4, plus=3)
+    page_queryset = page_object.page_queryset
+    page_string = page_object.gennerate_html()
+
+    context = {
+        "form": form,
+        "task_list": page_queryset,
+        "page_string": page_string,
+    }
+    return render(request, "task_list.html", context=context)
 
 
+@csrf_exempt
 def task_add(request):
-    return None
+    form = forms.TaskModelForm(data=request.POST)
+    if form.is_valid():
+        form.save()
+        data_dict = {"status": True}
+    else:
+        data_dict = {"status": False, "error": form.errors}
+    return HttpResponse(json.dumps(data_dict))
 
 
 def task_delete(request):
@@ -527,3 +546,7 @@ def task_ajax(request):
     print(request.POST)
     # return HttpResponse(json.dumps(request.POST))
     return JsonResponse(request.POST)
+
+
+def order_list(request):
+    return render(request, "order_list.html")
