@@ -79,6 +79,8 @@ class Task(models.Model):
 
     def __str__(self):
         return self.title
+
+
 class Order(models.Model):
     """订单表"""
     oid = models.CharField(verbose_name="订单号", max_length=64)

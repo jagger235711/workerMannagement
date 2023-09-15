@@ -61,5 +61,6 @@ urlpatterns = [
 
     # 订单管理
     path('order/list/', views.order_list),
+    path('order/add/', views.order_add),
 
 ]

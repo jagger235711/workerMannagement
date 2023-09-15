@@ -178,3 +178,10 @@ class TaskModelForm(BaseModelForm):
         widgets = {
             "detail": forms.TextInput
         }
+
+
+class OrderModelForm(BaseModelForm):
+    class Meta:
+        model = models.Order
+        # fields = "__all__"
+        exclude = ["oid", "user"]

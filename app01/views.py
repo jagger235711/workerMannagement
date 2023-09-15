@@ -1,4 +1,6 @@
 import json
+import random
+from datetime import datetime
 from io import BytesIO
 
 from django.http import HttpResponse, JsonResponse
@@ -549,4 +551,32 @@ def task_ajax(request):
 
 
 def order_list(request):
-    return render(request, "order_list.html")
+    form = forms.OrderModelForm()
+
+    query_set = models.Order.objects.all().order_by("-oid")
+    page_object = Pagination(request, queryset=query_set)
+    page_queryset = page_object.page_queryset
+    page_string = page_object.gennerate_html()
+
+    context = {
+        "form": form,
+        "task_list": page_queryset,
+        "page_string": page_string,
+    }
+    return render(request, "order_list.html", context=context)
+
+
+@csrf_exempt
+def order_add(request):
+    form = forms.OrderModelForm(data=request.POST)
+    if form.is_valid():
+        # 除用户输入的数据外，再额外添加一些值
+        form.instance.oid = datetime.now().strftime("%Y%m%d%H%M%S") + str(random.randint(1000, 9999))
+        form.instance.user_id = request.session["user_info"]["user_id"]
+        # print(form.instance.user)
+        # print(request.session["user_info"]["user_id"])
+        form.save()
+        data_dict = {"status": True}
+    else:
+        data_dict = {"status": False, "error": form.errors}
+    return HttpResponse(json.dumps(data_dict))

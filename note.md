@@ -73,6 +73,7 @@
                self.fields['name'].widget = forms.TextInput(attrs={'class': 'custom-class'})
 
    ```
+    2. 通过在meta类中编辑fields字段可以限制模板显示哪些字段。对应的还有参数exclude，用于排除哪些字段。
 
 6. fields是一个字典，其中包含表单中的所有字段及其对应的FormField对象。这个字典的键是字段的名称（例如username，email和age），值是FormField对象。
 

@@ -1,33 +1,199 @@
 {% extends "base.html" %}
 {% block content %}
 
+    {#    <div class="container">#}
+    {#        <div class="col">#}
+    {#            <input type="button" value="新建订单" class="btn btn-primary" data-toggle="modal"#}
+    {#                   data-target="#exampleModal">#}
+    {#            <input type="button" value="新建订单（js方式）" class="btn btn-primary" id="js_button">#}
+    {#        </div>#}
+    {#    </div>#}
     <div class="container">
-        <div>
+        <div class="col">
             <input type="button" value="新建订单" class="btn btn-primary" data-toggle="modal"
                    data-target="#exampleModal">
+            <input type="button" value="新建订单（js方式）" class="btn btn-primary" id="js_button">
         </div>
+        {#数据表格#}
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                订单列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>订单号</th>
+                    <th>订单名称</th>
+                    <th>订单价格</th>
+                    <th>订单状态</th>
+                    <th>下单用户</th>
+                    {#                                <th>状态</th>#}
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for object in task_list %}
+                    <tr>
+                        <th scope="row">{{ object.id }}</th>
+                        <td>{{ object.oid }}</td>
+                        <td>{{ object.title }}</td>
+                        <td>{{ object.price }}</td>
+                        <td>{{ object.get_status_display }}</td>
+                        {#                                    外键，object.user找到id，username找到名字#}
+                        <td>{{ object.user.username }}</td>
+                        {#                            <td>{{ object.creat_time|date:"Y-m-d" }}</td>#}
+
+                        {#                                    <td>{{ object.get_status_display }}</td>#}
+                        <td>
+                            <a class="btn btn-primary btn-xs"
+                               href="#">编辑</a>
+                            <a class=" btn btn-danger btn-xs" id="btnDelete" oid="{{ object.oid }}"
+                               href="#">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        {{ page_string }}
     </div>
 
 
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <h5 class="modal-title" id="addModalLabel">新建订单</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    ...
+                    <div class="container">
+                        <form id="form_add" style="margin-bottom: 10px">
+                            {% for field in form %}
+                                <div class="form-group">
+                                    <label>{{ field.label }}</label>
+                                    {{ field }}
+                                    <span class="error_msg" style="color: red"></span>
+                                </div>
+                            {% endfor %}
+                        </form>
+                        {#                        <div class="col-xs-12">#}
+                        {#                            <button class="btn btn-primary" type="submit" id="btn_add">提交</button>#}
+                        {#                        </div>#}
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="btn_save">确定</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #c93c3c">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">确认删除吗？</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {#                <div class="modal-body">#}
+                {#                    ...#}
+                {#                </div>#}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmDelete">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script>
+        var deleteId = 0;
+
+        function btnConfirmDelete() {
+            $('#js_confirmDelete').click(function () {
+        }
+
+        $(function () {
+            //页面加载完自动运行
+            btnButtonEvent();
+            btnAddEvent();
+            btnDeleteEvent();
+            btnConfirmDelete();
+        })
+
+        function btnButtonEvent() {
+            $('#btnConfirmDelete').click(function () {
+                $.ajax({
+                    url: '/order/delete/'+deleteId,
+                    type: 'GET',
+                    dataType: "JSON",
+                    success: function (res) {
+
+                    }
+                })
+            });
+        }
+
+        function btnAddEvent() {
+            $("#btn_save").click(function () {
+
+                {#$(".error_msg").text("换了换了换了换了换了换了换了换了");#}
+                $(".error_msg").empty();
+                $.ajax({
+                    url: '/order/add/',
+                    type: 'post',
+                    dataType: 'json',//反序列化
+                    data: $("#form_add").serialize(),
+                    success: function (res) {
+                        if (res.status) {
+                            {#console.log(res)#}
+                            {#alert("添加成功");#}
+                            {#js实现页面刷新#}
+                            location.reload();
+                            {#                            $("#form_add")->找到jQuery对象，#}
+                            {#                            $("#form_add")[0]->找到DOM对象，#}
+                            {#                            重置表单#}
+                            {#$("#form_add")[0].reset();#}
+                            {##}
+                            {#$('#exampleModal').modal('hide');#}
+                        } else {//将错误信息放入对应的位置
+                            $.each(res.error, function (id, data) {
+                                {#通过id_title找到title元素的位置，再通过next找到下一个元素，将错误信息赋给它#}
+                                $("#id_" + id).next().text(data[0]);
+                            })
+                        }
+                        {#console.log(data);#}
+                        {#console.log(data.name);#}
+                    }
+                })
+            })
+        }
+
+        function btnDeleteEvent() {
+            $('#btnDelete').click(function () {
+                $('#deleteModal').modal('show');
+                deleteId = $(this).attr('oid');
+                {#console.log(deleteId);#}
+            });
+        }
+    </script>
 {% endblock %}
