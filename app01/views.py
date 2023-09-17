@@ -580,3 +580,22 @@ def order_add(request):
     else:
         data_dict = {"status": False, "error": form.errors}
     return HttpResponse(json.dumps(data_dict))
+
+
+@csrf_exempt
+def order_delete(request, oid):
+    # oid = request.POST.get("oid")
+    order = models.Order.objects.filter(oid=oid)
+    orderExists = order.exists()
+    if orderExists:
+        order.delete()
+        res = {
+            "status": True,
+            "error": "删除成功",
+        }
+    else:
+        res = {
+            "status": False,
+            "error": "删除失败，订单不存在。",
+        }
+    return JsonResponse(res)
