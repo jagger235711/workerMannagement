@@ -583,9 +583,9 @@ def order_add(request):
 
 
 @csrf_exempt
-def order_delete(request, oid):
+def order_delete(request, orderId):
     # oid = request.POST.get("oid")
-    order = models.Order.objects.filter(oid=oid)
+    order = models.Order.objects.filter(id=orderId)
     orderExists = order.exists()
     if orderExists:
         order.delete()
@@ -597,5 +597,23 @@ def order_delete(request, oid):
         res = {
             "status": False,
             "error": "删除失败，订单不存在。",
+        }
+    return JsonResponse(res)
+
+
+@csrf_exempt
+def order_edit(request, orderId):
+    order = models.Order.objects.filter(id=orderId)  # 得到字典
+    orderExists = order.exists()
+    order = order.values().first()
+    if orderExists:
+        res = {
+            "status": True,
+            "orderDict": order,
+        }
+    else:
+        res = {
+            "status": False,
+            "error": "订单不存在。",
         }
     return JsonResponse(res)

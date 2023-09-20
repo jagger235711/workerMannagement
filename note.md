@@ -32,9 +32,13 @@
 - ORM操作
 
   ```
-  models.User.objects.filter(id="xxx")
-  models.User.objects.filter(id="xxx").order_by("-id")
+    models.User.objects.filter(id="xxx")
+    models.User.objects.filter(id="xxx").order_by("-id")
+  
+    models.Order.objects.filter(id=orderId).first()#得到对象
+    models.Order.objects.filter(id=orderId).values().first()#得到字典
   ```
+  
 
 - 分页组件。
 
@@ -122,6 +126,7 @@
     2. 一个标签可以有多个类
     3.  类选择器优先级大于id选择器
     4. 与类不同，在一个 HTML 文档中，ID 选择器会且仅会使用一次。
+18. json序列化只支持基本数据类型 
     
 ## 易错点
 

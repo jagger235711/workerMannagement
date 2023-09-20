@@ -44,15 +44,11 @@
                         <td>{{ object.title }}</td>
                         <td>{{ object.price }}</td>
                         <td>{{ object.get_status_display }}</td>
-                        {#                                    外键，object.user找到id，username找到名字#}
                         <td>{{ object.user.username }}</td>
-                        {#                            <td>{{ object.creat_time|date:"Y-m-d" }}</td>#}
-
-                        {#                                    <td>{{ object.get_status_display }}</td>#}
                         <td>
-                            <a class="btn btn-primary btn-xs"
+                            <a class="btn btn-primary btn-xs btnEdit" orderId="{{ object.id }}"
                                href="#">编辑</a>
-                            <button class=" btn btn-danger btn-xs btnDelete"  oid="{{ object.oid }}"
+                            <button class=" btn btn-danger btn-xs btnDelete" orderId="{{ object.id }}"
                                href="#">删除</button>
                         </td>
                     </tr>
@@ -67,11 +63,12 @@
 
 
     <!-- Modal -->
-    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addAndEditModal" tabindex="-1" aria-labelledby="addAndEditModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">新建订单</h5>
+                    <h5 class="modal-title" id="addAndEditModalLabel"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -87,9 +84,6 @@
                                 </div>
                             {% endfor %}
                         </form>
-                        {#                        <div class="col-xs-12">#}
-                        {#                            <button class="btn btn-primary" type="submit" id="btn_add">提交</button>#}
-                        {#                        </div>#}
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -126,7 +120,7 @@
 
 {% block js %}
     <script>
-        var deleteId = 0;
+        var orderId = 0;
 
 
 
@@ -136,18 +130,20 @@
             btnAddEvent();
             btnDeleteEvent();
             btnConfirmDelete();
+            btnEditEvent();
         })
 
         function btnButtonEvent() {
             $('#js_button').click(function () {
-                $('#addModal').modal('show');
+                $('#addAndEditModalLabel').text('添加订单');
+                $('#addAndEditModal').modal('show');
             });
         }
 
         function btnAddEvent() {
             $("#btn_save").click(function () {
-
                 $(".error_msg").empty();
+                location.reload();
                 $.ajax({
                     url: '/order/add/',
                     type: 'post',
@@ -174,7 +170,7 @@
         function btnDeleteEvent() {
             $('.btnDelete').click(function () {
                 $('#deleteModal').modal('show');
-                deleteId = $(this).attr('oid');
+                orderId = $(this).attr('orderId');
                 {#console.log(deleteId);#}
             });
         }
@@ -182,13 +178,40 @@
         function btnConfirmDelete() {
             $('#btnConfirmDelete').click(function () {
                 $.ajax({
-                    url: '/order/delete/' + deleteId + '/',
+                    url: '/order/delete/' + orderId + '/',
                     type: 'POST',
                     dataType: "JSON",
                     success: function (res) {
 
                         alert(res.error)
                         location.reload();
+
+                    }
+                })
+            });
+        }
+
+        function btnEditEvent() {
+            $('.btnEdit').click(function () {
+                location.reload();
+                orderId = $(this).attr('orderId');
+
+                $.ajax({
+                    url: '/order/edit/' + orderId + '/',
+                    type: 'POST',
+                    dataType: "JSON",
+                    success: function (res) {
+                        if (res.status) {
+                            $('#addAndEditModalLabel').text('编辑订单');
+                            $('#addAndEditModal').modal('show');
+                            $.each(res.orderDict, function (key, value) {
+                                $('#id_' + key).val(value);
+                            })
+                        } else {
+                            alert(res.error)
+                            location.reload();
+
+                        }
 
                     }
                 })
