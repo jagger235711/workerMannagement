@@ -1,18 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
 
-    {#    <div class="container">#}
-    {#        <div class="col">#}
-    {#            <input type="button" value="新建订单" class="btn btn-primary" data-toggle="modal"#}
-    {#                   data-target="#exampleModal">#}
-    {#            <input type="button" value="新建订单（js方式）" class="btn btn-primary" id="js_button">#}
-    {#        </div>#}
-    {#    </div>#}
     <div class="container">
         <div class="col">
             <input type="button" value="新建订单" class="btn btn-primary" data-toggle="modal"
                    data-target="#exampleModal">
-            <input type="button" value="新建订单（js方式）" class="btn btn-primary" id="js_button">
+            <input type="button" value="新建订单（js方式）" class="btn btn-primary add_or_edit_button" orderId='null'>
         </div>
         {#数据表格#}
         <div class="panel panel-default">
@@ -46,10 +39,11 @@
                         <td>{{ object.get_status_display }}</td>
                         <td>{{ object.user.username }}</td>
                         <td>
-                            <a class="btn btn-primary btn-xs btnEdit" orderId="{{ object.id }}"
+                            <a class="btn btn-primary btn-xs add_or_edit_button" orderId="{{ object.id }}"
                                href="#">编辑</a>
                             <button class=" btn btn-danger btn-xs btnDelete" orderId="{{ object.id }}"
-                               href="#">删除</button>
+                                    href="#">删除
+                            </button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -122,28 +116,29 @@
     <script>
         var orderId = 0;
 
-
-
         $(function () {
             //页面加载完自动运行
-            btnButtonEvent();
-            btnAddEvent();
+            addOrEditButton();
             btnDeleteEvent();
             btnConfirmDelete();
-            btnEditEvent();
         })
 
-        function btnButtonEvent() {
-            $('#js_button').click(function () {
-                $('#addAndEditModalLabel').text('添加订单');
-                $('#addAndEditModal').modal('show');
+        function addOrEditButton() {
+            $('.add_or_edit_button').click(function () {
+                orderId = $(this).attr('orderId');
+                if (orderId == 'null') {
+                    doAdd();
+                } else {
+                    doEdit();
+                }
             });
         }
 
-        function btnAddEvent() {
+        function doAdd() {
+            $('#addAndEditModalLabel').text('添加订单');
+            $('#addAndEditModal').modal('show');
             $("#btn_save").click(function () {
                 $(".error_msg").empty();
-                location.reload();
                 $.ajax({
                     url: '/order/add/',
                     type: 'post',
@@ -153,15 +148,12 @@
                         if (res.status) {
                             {#js实现页面刷新#}
                             location.reload();
-
                         } else {//将错误信息放入对应的位置
                             $.each(res.error, function (id, data) {
                                 {#通过id_title找到title元素的位置，再通过next找到下一个元素，将错误信息赋给它#}
                                 $("#id_" + id).next().text(data[0]);
                             })
                         }
-                        {#console.log(data);#}
-                        {#console.log(data.name);#}
                     }
                 })
             })
@@ -171,7 +163,6 @@
             $('.btnDelete').click(function () {
                 $('#deleteModal').modal('show');
                 orderId = $(this).attr('orderId');
-                {#console.log(deleteId);#}
             });
         }
 
@@ -182,39 +173,31 @@
                     type: 'POST',
                     dataType: "JSON",
                     success: function (res) {
-
                         alert(res.error)
                         location.reload();
-
                     }
                 })
             });
         }
 
-        function btnEditEvent() {
-            $('.btnEdit').click(function () {
-                location.reload();
-                orderId = $(this).attr('orderId');
+        function doEdit() {
+            orderId = $(this).attr('orderId');
+            $('#addAndEditModalLabel').text('编辑订单');
+            $('#addAndEditModal').modal('show');
 
-                $.ajax({
+            $.ajax({
                     url: '/order/edit/' + orderId + '/',
                     type: 'POST',
                     dataType: "JSON",
                     success: function (res) {
                         if (res.status) {
-                            $('#addAndEditModalLabel').text('编辑订单');
-                            $('#addAndEditModal').modal('show');
                             $.each(res.orderDict, function (key, value) {
                                 $('#id_' + key).val(value);
                             })
                         } else {
                             alert(res.error)
-                            location.reload();
-
                         }
-
                     }
-                })
             });
         }
 
