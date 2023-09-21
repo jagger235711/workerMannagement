@@ -602,15 +602,40 @@ def order_delete(request, orderId):
 
 
 @csrf_exempt
-def order_edit(request, orderId):
-    order = models.Order.objects.filter(id=orderId)  # 得到字典
+def order_detail(request, orderId):
+    order = models.Order.objects.filter(id=orderId)
     orderExists = order.exists()
-    order = order.values().first()
+    order = order.values().first()  # 得到字典
     if orderExists:
         res = {
             "status": True,
             "orderDict": order,
         }
+    else:
+        res = {
+            "status": False,
+            "error": "订单不存在。",
+        }
+    return JsonResponse(res)
+
+
+@csrf_exempt
+def order_edit(request, orderId):
+    order = models.Order.objects.filter(id=orderId)
+    orderExists = order.exists()
+    order = order.first()
+    if orderExists:
+        form = forms.OrderModelForm(instance=order, data=request.POST)
+        if form.is_valid():
+            form.save()
+            res = {
+                "status": True,
+            }
+        else:
+            res = {
+                "status": False,
+                "error": form.errors,
+            }
     else:
         res = {
             "status": False,
