@@ -123,6 +123,8 @@
         })
 
         function addOrEditButton() {
+            orderId = 'null'
+            $(".error_msg").empty();
             $('.add_or_edit_button').click(function () {
                 orderId = $(this).attr('orderId');
                 if (orderId == 'null') {
@@ -179,18 +181,19 @@
                 }
             });
             $("#btn_save").click(function () {
-                $(".error_msg").empty();
                 $.ajax({
                     url: '/order/edit/' + orderId + '/',
                     type: 'POST',
                     dataType: "JSON",
+                    data: $("#form_add_and_edit").serialize(),
                     success: function (res) {
-                        if (res.status) {
-                            $.each(res.orderDict, function (key, value) {
-                                $('#id_' + key).val(value);
+                        if (!res.status) {
+                            $.each(res.error, function (id, data) {
+                                {#通过id_title找到title元素的位置，再通过next找到下一个元素，将错误信息赋给它#}
+                                $("#id_" + id).next().text(data[0]);
                             })
                         } else {
-                            alert(res.error)
+                            location.reload();d
                         }
                     }
                 });
