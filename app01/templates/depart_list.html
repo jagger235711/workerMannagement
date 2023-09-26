@@ -1,49 +1,58 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% block content %}
-    <div>
-        <div class="container">
-            <div style="margin-bottom: 10px">
-                <a class="btn btn-success" href="/depart/add">
-                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
-                    新建部门
-                </a>
+  <div>
+    <div class="container">
+      <div class="card">
+        <div class="card-header">批量上传</div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" action="/depart/mutiUpdate/">
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="customFile" />
+              <label class="custom-file-label">Choose file</label>
+              <input type="submit" value="Upload" class="btn btn-primary" style="margin-top: 10px;margin-bottom: 10px;" />
             </div>
-
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">
-                    <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-                    部门列表
-                </div>
-
-                <!-- Table -->
-                <table class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>名称</th>
-                        <th>操作</th>
-                        {#                    <th>Username</th>#}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for object in queryset %}
-                        <tr>
-                            <th scope="row">{{ object.id }}</th>
-                            <td>{{ object.title }}</td>
-                            <td>
-                                <a class="btn btn-primary btn-xs"
-                                   href="/depart/edit/{{ object.id }}">编辑</a>
-                                <a class=" btn btn-danger btn-xs" href="/depart/delete/?uid={{ object.id }}">删除</a>
-                            </td>
-                            {#                    <td>@mdo</td>#}
-                        </tr>
-                    {% endfor %}
-
-                    </tbody>
-                </table>
-            </div>
-             {{ page_string }}
+          </form>
         </div>
+      </div>
     </div>
+    <div class="container">
+      <div style="margin-bottom: 10px; margin-top: 10px ">
+        <a class="btn btn-success" href="/depart/add">
+          <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+          新建部门
+        </a>
+      </div>
+
+      <div class="card">
+        <div class="card-header">部门列表</div>
+        <div class="card-body">
+          <!-- Table -->
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>名称</th>
+                <th>操作</th>
+                {# <th>Username</th> #}
+              </tr>
+            </thead>
+            <tbody>
+              {% for object in queryset %}
+                <tr>
+                  <th scope="row">{{ object.id }}</th>
+                  <td>{{ object.title }}</td>
+                  <td>
+                    <a class="btn btn-primary btn-xs" href="/depart/edit/{{ object.id }}">编辑</a>
+                    <a class="btn btn-danger btn-xs" href="/depart/delete/?uid={{ object.id }}">删除</a>
+                  </td>
+                  {# <td>@mdo</td> #}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {{ page_string }}
+      </div>
+    </div>
+  </div>
 {% endblock %}

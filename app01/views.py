@@ -16,11 +16,15 @@ from app01.utils.verification_code import generate_captcha
 
 #############################部门管理##################################
 
+
 # Create your views here.
 def depart_list(request):
     """部门列表"""
     queryset = models.Department.objects.all()
-    page_object = Pagination(queryset=queryset, request=request, )
+    page_object = Pagination(
+        queryset=queryset,
+        request=request,
+    )
     context = {
         "queryset": page_object.page_queryset,
         "page_string": page_object.gennerate_html(),
@@ -83,8 +87,8 @@ def user_add(request):
     """添加用户"""
     if request.method == "GET":
         context = {
-            'gender_choices': models.UserInfo.gender_choices,
-            'depart_list': models.Department.objects.all(),
+            "gender_choices": models.UserInfo.gender_choices,
+            "depart_list": models.Department.objects.all(),
         }
         return render(request, "user_add.html", context)
     else:
@@ -121,7 +125,9 @@ def user_edit(request, uid):
     """
     row_object = models.UserInfo.objects.filter(id=uid).first()
     if request.method == "GET":
-        form = forms.UserModelForm(instance=row_object)  # instance是一个实例对象，通常是从数据库中获取的。而data是一个字典，其中包含要提交的数据。
+        form = forms.UserModelForm(
+            instance=row_object
+        )  # instance是一个实例对象，通常是从数据库中获取的。而data是一个字典，其中包含要提交的数据。
         return render(request, "user_edit.html", {"form": form})
     else:
         form = forms.UserModelForm(data=request.POST, instance=row_object)
@@ -234,7 +240,6 @@ def prettynum_list(request):
 
     context = {
         "search_data": search_data,
-
         "queryset": page_queryset,  # 分完页的数据
         "page_string": page_string,  # 生成的页面
     }
@@ -321,10 +326,10 @@ def admin_list(request):
 
 def admin_add(request):
     """
-       添加管理员
-       :param request:
-       :return:
-       """
+    添加管理员
+    :param request:
+    :return:
+    """
     if request.method == "GET":
         form = forms.AdminModelForm()
         return render(request, "base_add.html", {"form": form, "title": "添加管理员"})
@@ -392,7 +397,9 @@ def admin_reset(request, uid):
         }
         return render(request, "base_add.html", context=context)
     else:  # post
-        form = forms.AdminResetModelForm(data=request.POST, instance=row_object)  # 修改密码时原来的对象也要带上，否则就是新建一个对象了
+        form = forms.AdminResetModelForm(
+            data=request.POST, instance=row_object
+        )  # 修改密码时原来的对象也要带上，否则就是新建一个对象了
         if form.is_valid():
             form.save()
             return redirect("/admin/list/")
@@ -476,7 +483,11 @@ def account_regist(request):
         context["error_form"] = form
         messages.error(request, "注册失败！")
 
-    return render(request=request, template_name="userWeb/registration/register.html", context=context)
+    return render(
+        request=request,
+        template_name="userWeb/registration/register.html",
+        context=context,
+    )
 
 
 def account_reset(request):
@@ -571,7 +582,9 @@ def order_add(request):
     form = forms.OrderModelForm(data=request.POST)
     if form.is_valid():
         # 除用户输入的数据外，再额外添加一些值
-        form.instance.oid = datetime.now().strftime("%Y%m%d%H%M%S") + str(random.randint(1000, 9999))
+        form.instance.oid = datetime.now().strftime("%Y%m%d%H%M%S") + str(
+            random.randint(1000, 9999)
+        )
         form.instance.user_id = request.session["user_info"]["user_id"]
         # print(form.instance.user)
         # print(request.session["user_info"]["user_id"])
@@ -649,47 +662,36 @@ def chart_list(request):
 
 
 def chart_bar(request):
-    """ 构造柱状图的数据 """
+    """构造柱状图的数据"""
     # 数据可以去数据库中获取
     legend = ["梁吉宁", "武沛齐"]
     series_list = [
-        {
-            "name": '梁吉宁',
-            "type": 'bar',
-            "data": [15, 20, 36, 10, 10, 10]
-        },
-        {
-            "name": '武沛齐',
-            "type": 'bar',
-            "data": [45, 10, 66, 40, 20, 50]
-        }
+        {"name": "梁吉宁", "type": "bar", "data": [15, 20, 36, 10, 10, 10]},
+        {"name": "武沛齐", "type": "bar", "data": [45, 10, 66, 40, 20, 50]},
     ]
-    x_axis = ['1月', '2月', '4月', '5月', '6月', '7月']
+    x_axis = ["1月", "2月", "4月", "5月", "6月", "7月"]
 
     result = {
         "status": True,
         "data": {
-            'legend': legend,
-            'series_list': series_list,
-            'x_axis': x_axis,
-        }
+            "legend": legend,
+            "series_list": series_list,
+            "x_axis": x_axis,
+        },
     }
     return JsonResponse(result)
 
 
 def chart_pie(request):
-    """ 构造饼图的数据 """
+    """构造饼图的数据"""
 
     db_data_list = [
-        {"value": 2048, "name": 'IT部门'},
-        {"value": 1735, "name": '运营'},
-        {"value": 580, "name": '新媒体'},
+        {"value": 2048, "name": "IT部门"},
+        {"value": 1735, "name": "运营"},
+        {"value": 580, "name": "新媒体"},
     ]
 
-    result = {
-        "status": True,
-        "data": db_data_list
-    }
+    result = {"status": True, "data": db_data_list}
     return JsonResponse(result)
 
 
@@ -697,34 +699,38 @@ def chart_line(request):
     legend = ["上海", "广西"]
     series_list = [
         {
-            "name": '上海',
-            "type": 'line',
-            "stack": 'Total',
-            "data": [15, 20, 36, 10, 10, 10]
+            "name": "上海",
+            "type": "line",
+            "stack": "Total",
+            "data": [15, 20, 36, 10, 10, 10],
         },
         {
-            "name": '广西',
-            "type": 'line',
-            "stack": 'Total',
-            "data": [45, 10, 66, 40, 20, 50]
-        }
+            "name": "广西",
+            "type": "line",
+            "stack": "Total",
+            "data": [45, 10, 66, 40, 20, 50],
+        },
     ]
-    x_axis = ['1月', '2月', '4月', '5月', '6月', '7月']
+    x_axis = ["1月", "2月", "4月", "5月", "6月", "7月"]
 
     result = {
         "status": True,
         "data": {
-            'legend': legend,
-            'series_list': series_list,
-            'x_axis': x_axis,
-        }
+            "legend": legend,
+            "series_list": series_list,
+            "x_axis": x_axis,
+        },
     }
     return JsonResponse(result)
+
+
 # 文件上传
 def upload_list(request):
     if request.method == "GET":
-        return render(request, 'upload_list.html')
-    print(request.POST)
-    print(request.FILES)
+        return render(request, "upload_list.html")
+    file_object = request.FILES.get("avatar")
+    with open(file_object.name, "wb") as f:
+        for chunk in file_object.chunks():
+            f.write(chunk)
+
     return HttpResponse("...")
-    
