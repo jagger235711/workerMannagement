@@ -720,3 +720,11 @@ def chart_line(request):
         }
     }
     return JsonResponse(result)
+# 文件上传
+def upload_list(request):
+    if request.method == "GET":
+        return render(request, 'upload_list.html')
+    print(request.POST)
+    print(request.FILES)
+    return HttpResponse("...")
+    

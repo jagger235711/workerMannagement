@@ -66,11 +66,12 @@ urlpatterns = [
     path('order/detail/<int:orderId>/', views.order_detail),
     path('order/edit/<int:orderId>/', views.order_edit),
 
-    #统计信息
+    # 统计信息
     path('chart/list/', views.chart_list),
     path('chart/bar/', views.chart_bar),
     path('chart/line/', views.chart_line),
     path('chart/pie/', views.chart_pie),
 
-
+    # 上传文件
+    path('upload/list/', views.upload_list),
 ]

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container">
+        <form method="post" enctype="multipart/form-data" >
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="file" name="avatar">
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+
+{% endblock %}
