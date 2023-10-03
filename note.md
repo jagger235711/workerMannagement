@@ -127,6 +127,10 @@
     3.  类选择器优先级大于id选择器
     4. 与类不同，在一个 HTML 文档中，ID 选择器会且仅会使用一次。
 18. json序列化只支持基本数据类型 
+19. 通过 ' pip freeze >xx.txt '来保存项目的包
+20. 创建虚拟环境 python -m venv ENV_DIR
+21. 激活环境 .\ENV_DIR\Scripts\activate
+22. 退出环境 deactivate
     
 ## 易错点
 
