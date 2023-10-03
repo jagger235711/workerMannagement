@@ -14,7 +14,7 @@ from app01.utils.pagination import Pagination
 from app01.utils.verification_code import generate_captcha
 
 
-#############################部门管理##################################
+# 部门管
 
 
 # Create your views here.
