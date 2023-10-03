@@ -22,7 +22,10 @@ def generate_captcha(width=120, height=30, char_num=5):
     font = ImageFont.truetype(font='arial.ttf', size=font_size)
 
     # 计算每个字符所占的宽度
-    font_width, font_height = font.getsize(captcha_text[0])
+    # font_width, font_height = font.getsize(captcha_text[0])
+    left, top, right, bottom = font.getbbox(captcha_text[0])
+    font_width = right - left
+    font_height = bottom - top
 
     # 绘制每个字符,并随机微调位置和字体大小
     posi = 25
