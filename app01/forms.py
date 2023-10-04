@@ -5,12 +5,13 @@ from app01.utils.encrypt import md5
 
 
 class BaseModelForm(forms.ModelForm):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             # 通过定义插件的属性达到约束的目的
-            field.widget.attrs.update({"class": "form-control", "placeholder": field.label})
+            field.widget.attrs.update(
+                {"class": "form-control", "placeholder": field.label}
+            )
 
 
 class UserModelForm(BaseModelForm):
@@ -27,33 +28,34 @@ class UserModelForm(BaseModelForm):
 
 class AdminModelForm(BaseModelForm):
     """
-        子类自定义字段、父类自定义字段、meta类、子类init方法、父类init方法执行顺序
-        当创建ProductForm对象时,执行顺序是:
+    子类自定义字段、父类自定义字段、meta类、子类init方法、父类init方法执行顺序
+    当创建ProductForm对象时,执行顺序是:
 
-        首先执行自定义的name字段
-        首先执行父类中定义的自定义字段
-        然后执行子类中定义的自定义字段
+    首先执行自定义的name字段
+    首先执行父类中定义的自定义字段
+    然后执行子类中定义的自定义字段
 
-        最后才是各自的__init__方法
+    最后才是各自的__init__方法
 
-        然后进入__init__方法进行初始化逻辑
-        原因是在Python中,类属性和方法的定义要先于__init__方法执行。
-        自定义字段实际上是定义在类范围内的属性,所以会先于__init__执行。
-        而在__init__内部,就可以访问到之前定义的name字段了。
-        所以ModelForm子类中确实是自定义字段语句先执行,然后再执行__init__中的初始化代码。
+    然后进入__init__方法进行初始化逻辑
+    原因是在Python中,类属性和方法的定义要先于__init__方法执行。
+    自定义字段实际上是定义在类范围内的属性,所以会先于__init__执行。
+    而在__init__内部,就可以访问到之前定义的name字段了。
+    所以ModelForm子类中确实是自定义字段语句先执行,然后再执行__init__中的初始化代码。
 
-        如果父类和子类中都定义了Meta类,执行顺序是:
+    如果父类和子类中都定义了Meta类,执行顺序是:
 
-        首先执行父类的Meta类
-        然后执行子类的Meta类
-        最后执行各自的__init__方法
-        原因是在Python中,类属性和方法的定义要先于__init__方法执行。
-        Meta类是定义在类范围,所以会先于__init__执行。
+    首先执行父类的Meta类
+    然后执行子类的Meta类
+    最后执行各自的__init__方法
+    原因是在Python中,类属性和方法的定义要先于__init__方法执行。
+    Meta类是定义在类范围,所以会先于__init__执行。
 
-        __init__方法在类初始化的时候执行
-        这 Ensure 子类Meta可以覆盖父类Meta的配置。
+    __init__方法在类初始化的时候执行
+    这 Ensure 子类Meta可以覆盖父类Meta的配置。
 
     """
+
     # 定义字段达到约束的目的，同时可以定义插件
     password = forms.CharField(
         label="密码",
@@ -94,7 +96,9 @@ class AdminModelForm(BaseModelForm):
 class AdminAddModelForm(BaseModelForm):
     class Meta:
         model = models.Admin
-        fields = ["username", ]
+        fields = [
+            "username",
+        ]
 
 
 class AdminResetModelForm(AdminModelForm):
@@ -142,12 +146,17 @@ class AddPrettyNumModelForm(PrettyNumModelForm):
 
 
 class BaseForm(forms.Form):
+    exclude_fields = []  # 不希望添加约束的字段
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             # 通过定义插件的属性达到约束的目的
-            field.widget.attrs.update({"class": "form-control", "placeholder": field.label})
+            if name in self.exclude_fields:
+                continue
+            field.widget.attrs.update(
+                {"class": "form-control", "placeholder": field.label}
+            )
 
 
 class LoginForm(BaseForm):
@@ -175,9 +184,7 @@ class TaskModelForm(BaseModelForm):
     class Meta:
         model = models.Task
         fields = "__all__"
-        widgets = {
-            "detail": forms.TextInput
-        }
+        widgets = {"detail": forms.TextInput}
 
 
 class OrderModelForm(BaseModelForm):
@@ -185,3 +192,10 @@ class OrderModelForm(BaseModelForm):
         model = models.Order
         # fields = "__all__"
         exclude = ["oid", "user"]
+
+
+class UploadForm(BaseForm):
+    exclude_fields = ["img"]
+    name = forms.CharField(label="姓名")
+    age = forms.IntegerField(label="年龄")
+    img = forms.FileField(label="头像")

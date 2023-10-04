@@ -2,17 +2,18 @@
 
 1. 创建项目，创建、注册app，配置静态文件、模板路径，
 2. 配置数据库操作：[配置第三方模块连接数据库]，创建、连接数据库，编写models，定义数据库表，修改数据库配置，生成数据库表
+    ```python
+    manage.py makemigrations
+    manage.py migrate
+    ```
 
-   `mannage.py makemigrations`
-
-   `mannage.py migrate`
-3. 业务模块编写
+1. 业务模块编写
     1. 页面设计
     2. 配置url
     3. 编写对应视图函数，先不写具体功能，先把页面写出来。目标是要能看到页面，看到页面之后，再进行功能开发。
     4. 去对应视图中实现具体功能
     5. 优化，使用螺旋模型进行开发
-4. 
+2. 
 - 在 urls.py ，路由 （ URL 和 函数的对应关系）。
 
 - 在views.py，视图函数，编写业务逻辑。
@@ -93,10 +94,8 @@
 7. 可以向modelform中传入已提交的数据，字段会自动匹配。再通过is_valid方法进行校验，要是验证失败错误信息也会被添加进入form。通过字段.errors可以查看错误信息。
 
    ```python
-   
    form = UserModelForm(request.POST)
    form.is_valid():
-   
    ```   
 8. 通过在modelForm中重写字段可以自定义表单的校验规则
 9. 针对数据库的表单操作用modelform，其余的用form
@@ -131,6 +130,22 @@
 20. 创建虚拟环境 python -m venv ENV_DIR
 21. 激活环境 .\ENV_DIR\Scripts\activate
 22. 退出环境 deactivate
+23. Django中的静态文件只能放在static目录下，用户上传的文件应该放在media目录
+24. 在Django中配置media目录
+    1.  配置urls.py
+
+        ```python
+        re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),#配置用户上传文件目录
+        ```
+        
+    2.  修改settings.py文件
+        
+        ```python
+        MEDIA_ROOT = os.path.join(BASE_DIR, "media")#根目录下的media文件夹
+        MEDIA_URL = "/media/"
+        ```
+    
+    2.  
     
 ## 易错点
 
