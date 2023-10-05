@@ -763,3 +763,38 @@ def upload_form(request):
         )
         return HttpResponse("...")
     return render(request, "upload_form.html", {"form": form, "title": title})
+
+
+def upload_modelForm(request):
+    title = "modelForm上传"
+    if request.method == "GET":
+        form = forms.UploadModelForm()
+        return render(request, "upload_form.html", {"form": form, "title": title})
+
+    form = forms.UploadModelForm(data=request.POST, files=request.FILES)
+    if form.is_valid():
+        # 文件的保存由Django自动完成，无需手动处理。前提是先配置media路径
+        form.save()
+        return HttpResponse("Success")
+    return render(request, "upload_form.html", {"form": form, "title": title})
+
+
+def city_list(request):
+    queryset = models.City.objects.all()
+    return render(request, "city_list.html", {"queryset": queryset})
+
+
+def city_add(request):
+    title = "新建城市"
+
+    if request.method == "GET":
+        form = forms.UploadModelForm()
+        return render(request, "upload_form.html", {"form": form, "title": title})
+
+    form = forms.UploadModelForm(data=request.POST, files=request.FILES)
+    if form.is_valid():
+        # 对于文件：自动保存；
+        # 字段 + 上传路径写入到数据库
+        form.save()
+        return redirect("/city/list/")
+    return render(request, "upload_form.html", {"form": form, "title": title})

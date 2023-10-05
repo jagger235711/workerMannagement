@@ -21,7 +21,9 @@ from app01 import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),#配置用户上传文件目录
+    re_path(
+        r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}
+    ),  # 配置用户上传文件目录
     path("", views.index),
     path("login/", views.account_login, name="account_login"),
     path("logout/", views.account_logout, name="account_logout"),
@@ -71,4 +73,9 @@ urlpatterns = [
     # 上传文件
     path("upload/list/", views.upload_list),
     path("upload/form/", views.upload_form),
+    path("upload/modelForm/", views.upload_modelForm),
+    # 城市管理
+    path("city/list/", views.city_list),
+    path("city/add/", views.city_add),
+    
 ]

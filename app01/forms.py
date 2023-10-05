@@ -4,11 +4,29 @@ from app01 import models
 from app01.utils.encrypt import md5
 
 
-class BaseModelForm(forms.ModelForm):
+class BaseForm(forms.Form):
+    exclude_fields = []  # 不希望添加约束的字段
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             # 通过定义插件的属性达到约束的目的
+            if name in self.exclude_fields:
+                continue
+            field.widget.attrs.update(
+                {"class": "form-control", "placeholder": field.label}
+            )
+
+
+class BaseModelForm(forms.ModelForm):
+    exclude_fields = []  # 不希望添加约束的字段
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            # 通过定义插件的属性达到约束的目的
+            if name in self.exclude_fields:
+                continue
             field.widget.attrs.update(
                 {"class": "form-control", "placeholder": field.label}
             )
@@ -145,20 +163,6 @@ class AddPrettyNumModelForm(PrettyNumModelForm):
         fields = "__all__"
 
 
-class BaseForm(forms.Form):
-    exclude_fields = []  # 不希望添加约束的字段
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for name, field in self.fields.items():
-            # 通过定义插件的属性达到约束的目的
-            if name in self.exclude_fields:
-                continue
-            field.widget.attrs.update(
-                {"class": "form-control", "placeholder": field.label}
-            )
-
-
 class LoginForm(BaseForm):
     username = forms.CharField(
         label="用户名",
@@ -199,3 +203,11 @@ class UploadForm(BaseForm):
     name = forms.CharField(label="姓名")
     age = forms.IntegerField(label="年龄")
     img = forms.FileField(label="头像")
+
+
+class UploadModelForm(BaseModelForm):
+    exclude_fields = ["img"]
+
+    class Meta:
+        model = models.City
+        fields = "__all__"

@@ -118,3 +118,11 @@ class Boss(models.Model):
     name = models.CharField(verbose_name="姓名", max_length=32)
     age = models.IntegerField(verbose_name="年龄")
     img = models.CharField(verbose_name="头像", max_length=128)
+
+
+class City(models.Model):
+    """用户信息"""
+
+    name = models.CharField(verbose_name="名称", max_length=32)
+    count = models.IntegerField(verbose_name="人口")
+    img = models.FileField(verbose_name="logo", max_length=128,upload_to='city/')
