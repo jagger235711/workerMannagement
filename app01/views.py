@@ -751,10 +751,9 @@ def upload_form(request):
 
         # media_path = os.path.join(settings.MEDIA_ROOT, image_object.name)
         media_path = os.path.join("media", image_object.name)
-        f = open(media_path, mode="wb")
-        for chunk in image_object.chunks():
-            f.write(chunk)
-        f.close()
+        with open(media_path, "wb") as f:
+            for chunk in image_object.chunks():
+                f.write(chunk)
 
         # 2.将图片文件路径写入到数据库
         models.Boss.objects.create(

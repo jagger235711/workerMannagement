@@ -2,9 +2,10 @@
 
 1. 创建项目，创建、注册app，配置静态文件、模板路径，
 2. 配置数据库操作：[配置第三方模块连接数据库]，创建、连接数据库，编写models，定义数据库表，修改数据库配置，生成数据库表
+
     ```python
-    manage.py makemigrations
-    manage.py migrate
+    python manage.py makemigrations
+    python manage.py migrate
     ```
 
 1. 业务模块编写
@@ -13,7 +14,8 @@
     3. 编写对应视图函数，先不写具体功能，先把页面写出来。目标是要能看到页面，看到页面之后，再进行功能开发。
     4. 去对应视图中实现具体功能
     5. 优化，使用螺旋模型进行开发
-2. 
+2.
+
 - 在 urls.py ，路由 （ URL 和 函数的对应关系）。
 
 - 在views.py，视图函数，编写业务逻辑。
@@ -40,9 +42,7 @@
     models.Order.objects.filter(id=orderId).values().first()#得到字典
   ```
   
-
 - 分页组件。
-
 
 ## 捷径
 
@@ -78,6 +78,7 @@
                self.fields['name'].widget = forms.TextInput(attrs={'class': 'custom-class'})
 
    ```
+
     2. 通过在meta类中编辑fields字段可以限制模板显示哪些字段。对应的还有参数exclude，用于排除哪些字段。
 
 6. fields是一个字典，其中包含表单中的所有字段及其对应的FormField对象。这个字典的键是字段的名称（例如username，email和age），值是FormField对象。
@@ -96,7 +97,8 @@
    ```python
    form = UserModelForm(request.POST)
    form.is_valid():
-   ```   
+   ```
+
 8. 通过在modelForm中重写字段可以自定义表单的校验规则
 9. 针对数据库的表单操作用modelform，其余的用form
 10. form.save()保存的是用户输入的所有信息，要想保存其他信息用form.instance.字段名=值
@@ -123,30 +125,30 @@
 17. html中id选择器和类选择器的区别
     1. 类选择器是.class id选择器是#id
     2. 一个标签可以有多个类
-    3.  类选择器优先级大于id选择器
+    3. 类选择器优先级大于id选择器
     4. 与类不同，在一个 HTML 文档中，ID 选择器会且仅会使用一次。
-18. json序列化只支持基本数据类型 
+18. json序列化只支持基本数据类型
 19. 通过 ' pip freeze >xx.txt '来保存项目的包
 20. 创建虚拟环境 python -m venv ENV_DIR
 21. 激活环境 .\ENV_DIR\Scripts\activate
 22. 退出环境 deactivate
 23. Django中的静态文件只能放在static目录下，用户上传的文件应该放在media目录
 24. 在Django中配置media目录
-    1.  配置urls.py
+    1. 配置urls.py
 
         ```python
         re_path(r"media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),#配置用户上传文件目录
         ```
-        
-    2.  修改settings.py文件
-        
+
+    2. 修改settings.py文件
+
         ```python
         MEDIA_ROOT = os.path.join(BASE_DIR, "media")#根目录下的media文件夹
         MEDIA_URL = "/media/"
         ```
-    
+
     2.  
-    
+
 ## 易错点
 
 1. 模板语法中实例化对象不允许加括号，需要括号时会自动添加
@@ -155,4 +157,23 @@
 3. 自定义中间件需要在settings.middleware中注册
     1. process_request
         1. process_request返回HttpResponse、render、redirect对象时，请求会停止传递,返回None时，请求会继续向下传递
-        2. 
+4. .gitignore自定义要忽略文件的路径的规则
+    - prj
+
+    所有名字是prj的文件和文件夹都会被忽略，不管其目录的相对位置在哪。
+    - /prj
+
+    开头的/指定根目录。
+    所以整体代表根目录下的prj（不管prj是文件夹还是文件）都会被忽略。
+    - prj/
+
+    所有名字是prj的文件夹里的所有内容都会被忽略。
+    - /prj/*
+
+    根目录下的prj文件夹里的所有都忽略掉。
+    - *prj/*
+
+    根目录下以prj结尾的文件夹里的所有内容都会被忽略。
+    - *是通配符，替代一个或多个任意字符
+
+        **表示任意层级目录

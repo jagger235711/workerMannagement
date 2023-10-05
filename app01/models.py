@@ -113,7 +113,7 @@ class Order(models.Model):
 
 
 class Boss(models.Model):
-    """老板"""
+    """用户信息"""
 
     name = models.CharField(verbose_name="姓名", max_length=32)
     age = models.IntegerField(verbose_name="年龄")
